@@ -1,0 +1,42 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="Lite UPS Panel" Manufacturer="Lite UPS Panel" Version="1.1.0"
+           UpgradeCode="6F1B2C0E-3A55-4D7B-9E21-8C4D5A7B1F30" Scope="perMachine" Compressed="yes">
+    <MajorUpgrade DowngradeErrorMessage="Já está instalada uma versão mais recente." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="Lite UPS Panel" />
+    </StandardDirectory>
+    <StandardDirectory Id="CommonAppDataFolder">
+      <Directory Id="DATADIR" Name="UPS Panel" />
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder" />
+
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
+      <Component Id="MainExe">
+        <File Id="ExeFile" Source="target/release/ups-panel.exe" KeyPath="yes">
+          <Shortcut Id="StartMenuLnk" Directory="ProgramMenuFolder" Name="Lite UPS Panel" Advertise="no" />
+        </File>
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+                       Name="Lite UPS Panel" Type="string" Value="&quot;[INSTALLFOLDER]ups-panel.exe&quot; --hidden" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="DataFiles" Directory="DATADIR">
+      <Component Id="DataDir" Guid="B7C3E9A4-52D1-4F8A-A6B0-3E7D91C25F18">
+        <CreateFolder />
+      </Component>
+    </ComponentGroup>
+
+    <CustomAction Id="GrantData" Directory="DATADIR" Execute="deferred" Impersonate="no" Return="check"
+                  ExeCommand="&quot;[SystemFolder]icacls.exe&quot; &quot;[DATADIR].&quot; /grant *S-1-5-32-545:(OI)(CI)M" />
+    <InstallExecuteSequence>
+      <Custom Action="GrantData" After="InstallFiles" Condition="NOT REMOVE~=&quot;ALL&quot;" />
+    </InstallExecuteSequence>
+
+    <Feature Id="Main" Title="Lite UPS Panel" Level="1">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentGroupRef Id="DataFiles" />
+    </Feature>
+  </Package>
+</Wix>

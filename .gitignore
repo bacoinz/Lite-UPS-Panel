@@ -1,0 +1,7 @@
+/target
+*.msi
+*.wixpdb
+*.log
+dump.txt
+out*.txt
+err*.txt
