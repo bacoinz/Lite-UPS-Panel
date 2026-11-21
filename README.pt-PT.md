@@ -24,7 +24,8 @@ Começou como uma versão leve dos ecrãs que eu usava no PowerPanel Personal da
 - **Energia:** consumo diário e acumulado, custo e CO₂ emitido, com a tabela por país.
 - **Desligar com segurança:** manter o computador a funcionar até restarem N minutos, ou preservar a bateria após N minutos em bateria. Contagem de 30 s que podes cancelar.
 - **Definições da UPS:** tensões de transferência, alarme sonoro e auto-teste (o que a UPS não suportar fica desativado).
-- **Visual de Windows 11:** tema escuro, Mica/Acrylic, cartões e DPI por monitor. A interface está só em português europeu.
+- **Visual de Windows 11:** tema escuro, Mica/Acrylic, cartões e DPI por monitor.
+- **Cinco idiomas:** English, Português, Español, Italiano e Français. Segue o idioma do Windows (outros caem para inglês) e podes mudá-lo em **Configuração → Idioma**.
 
 ## Comparação com o PowerPanel Personal
 

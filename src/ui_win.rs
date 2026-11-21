@@ -93,6 +93,8 @@ pub fn open(_owner: HWND) {
     }
 }
 
+pub(crate) const WM_RELANG: u32 = WM_APP + 12;
+
 fn select_page(i: usize) {
     unsafe {
         let old = page();
@@ -194,6 +196,13 @@ unsafe extern "system" fn main_proc(h: HWND, m: u32, wp: WPARAM, lp: LPARAM) -> 
             LRESULT(1)
         }
         WM_BG => { bg_done(wp.0, lp.0 != 0); LRESULT(0) }
+        WM_RELANG => {
+            // idioma mudou: reconstrói a página atual e repinta a barra lateral
+            select_page(CUR.get());
+            let nav = GetDlgItem(Some(h), ID_NAV).unwrap_or_default();
+            let _ = InvalidateRect(Some(nav), None, true);
+            LRESULT(0)
+        }
         WM_NAV_SELECT => {
             if wp.0 != CUR.get() { select_page(wp.0); }
             LRESULT(0)

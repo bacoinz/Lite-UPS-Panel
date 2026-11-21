@@ -3,6 +3,7 @@ mod app;
 mod db;
 mod dump;
 mod hid;
+mod i18n;
 mod monitor;
 mod shutdown;
 mod ui;
@@ -17,6 +18,7 @@ fn main() {
     let has = |f: &str| args.iter().any(|a| a == f);
     if has("--dump") { dump::run(); return; }
     if has("--write-test") { dump::write_test(); return; }
+    if let Some(i) = args.iter().position(|a| a == "--shot") { theme::init(); dump::shot(args.get(i + 1).map(|s| s.as_str()).unwrap_or("shots")); return; }
     if has("--status") {
         let h = hid::Hid::open_ups().expect("UPS");
         let lim = ups::limits(&h).map(|l| (l.low, l.high));

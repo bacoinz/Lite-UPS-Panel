@@ -1,5 +1,5 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Package Name="Lite UPS Panel" Manufacturer="Lite UPS Panel" Version="1.1.0"
+  <Package Name="Lite UPS Panel" Manufacturer="Lite UPS Panel" Version="1.2.0"
            UpgradeCode="6F1B2C0E-3A55-4D7B-9E21-8C4D5A7B1F30" Scope="perMachine" Compressed="yes">
     <MajorUpgrade DowngradeErrorMessage="Já está instalada uma versão mais recente." />
     <MediaTemplate EmbedCab="yes" />

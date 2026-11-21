@@ -1,4 +1,5 @@
 //! Loop de mensagens único: tray + timer de 2 s que lê a UPS, regista eventos e decide o shutdown.
+use crate::i18n::tr;
 use crate::db::Db;
 use crate::hid::Hid;
 use crate::monitor::{Action, Kind, Mode, Monitor};
@@ -81,16 +82,16 @@ pub fn kind_name(k: Kind) -> &'static str {
 
 fn message(k: Kind) -> &'static str {
     match k {
-        Kind::PowerFail => "Falha de energia: a UPS passou para bateria",
-        Kind::PowerRestored => "Energia restabelecida",
-        Kind::UnderVoltage => "Subtensão: a UPS passou para bateria",
-        Kind::OverVoltage => "Sobretensão: a UPS passou para bateria",
-        Kind::CommLost => "Comunicação com a UPS perdida",
-        Kind::CommRestored => "Comunicação com a UPS restabelecida",
-        Kind::SelfTestPass => "Auto-teste concluído: passou",
-        Kind::SelfTestFail => "Auto-teste concluído: falhou",
-        Kind::ShutdownStart => "O computador vai desligar em 30 s",
-        Kind::ShutdownCancel => "Desligar cancelado",
+        Kind::PowerFail => tr("Falha de energia: a UPS passou para bateria"),
+        Kind::PowerRestored => tr("Energia restabelecida"),
+        Kind::UnderVoltage => tr("Subtensão: a UPS passou para bateria"),
+        Kind::OverVoltage => tr("Sobretensão: a UPS passou para bateria"),
+        Kind::CommLost => tr("Comunicação com a UPS perdida"),
+        Kind::CommRestored => tr("Comunicação com a UPS restabelecida"),
+        Kind::SelfTestPass => tr("Auto-teste concluído: passou"),
+        Kind::SelfTestFail => tr("Auto-teste concluído: falhou"),
+        Kind::ShutdownStart => tr("O computador vai desligar em 30 s"),
+        Kind::ShutdownCancel => tr("Desligar cancelado"),
         _ => "",
     }
 }
@@ -98,6 +99,7 @@ fn message(k: Kind) -> &'static str {
 impl App {
     fn new() -> Option<App> {
         let db = Db::open(&format!("{}\\ups.db", data_dir())).ok()?;
+        crate::i18n::set(crate::i18n::resolve(&db.get("lang").unwrap_or_else(|| "auto".into())));
         let mode = load_mode(&db);
         let sounds = db.get("sounds").map(|s| s != "0").unwrap_or(true);
         let cost_kwh = db.get("cost_kwh").and_then(|s| s.parse().ok()).unwrap_or(0.09);
@@ -147,12 +149,14 @@ impl App {
             self.last_flush = now;
         }
         let tip = match &self.st {
-            Some(s) => format!("UPS: {} · {}% · {} min", if s.on_battery() { "Bateria" } else { "AC" }, s.capacity, s.runtime_s / 60),
-            None => "UPS: sem comunicação".to_string(),
+            Some(s) => format!("UPS: {} · {}% · {} min", if s.on_battery() { tr("Bateria") } else { tr("AC") }, s.capacity, s.runtime_s / 60),
+            None => tr("UPS: sem comunicação").to_string(),
         };
         (tip, balloon)
     }
 }
+
+fn wide0(s: &str) -> Vec<u16> { s.encode_utf16().chain([0]).collect() }
 
 fn wbuf<const N: usize>(s: &str) -> [u16; N] {
     let mut b = [0u16; N];
@@ -201,10 +205,11 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wp: WPARAM, lp: LPARAM) 
             if ev == WM_RBUTTONUP || ev == WM_LBUTTONDBLCLK {
                 if ev == WM_LBUTTONDBLCLK { open_window(hwnd); return LRESULT(0); }
                 let menu = CreatePopupMenu().unwrap();
-                let _ = AppendMenuW(menu, MF_STRING, CMD_OPEN, w!("Abrir"));
-                let _ = AppendMenuW(menu, MF_STRING, CMD_TEST, w!("Auto-teste da UPS"));
+                let (m_open, m_test, m_exit) = (wide0(tr("Abrir")), wide0(tr("Auto-teste da UPS")), wide0(tr("Sair")));
+                let _ = AppendMenuW(menu, MF_STRING, CMD_OPEN, PCWSTR(m_open.as_ptr()));
+                let _ = AppendMenuW(menu, MF_STRING, CMD_TEST, PCWSTR(m_test.as_ptr()));
                 let _ = AppendMenuW(menu, MF_SEPARATOR, 0, PCWSTR::null());
-                let _ = AppendMenuW(menu, MF_STRING, CMD_EXIT, w!("Sair"));
+                let _ = AppendMenuW(menu, MF_STRING, CMD_EXIT, PCWSTR(m_exit.as_ptr()));
                 let mut pt = POINT::default();
                 let _ = GetCursorPos(&mut pt);
                 let _ = SetForegroundWindow(hwnd);
@@ -257,3 +262,12 @@ pub fn run(_hidden: bool) {
         drop(m);
     }
 }
+
+/// Ferramentas de desenvolvimento (`--shot`): prepara o estado sem tray nem mutex.
+pub fn shot_setup() -> bool {
+    let Some(app) = App::new() else { return false };
+    APP.with(|a| *a.borrow_mut() = Some(app));
+    std::thread::spawn(poll_loop);
+    true
+}
+pub fn shot_tick() { APP.with(|a| { if let Some(app) = a.borrow_mut().as_mut() { app.tick(); } }); }

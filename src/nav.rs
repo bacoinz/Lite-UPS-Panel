@@ -1,4 +1,5 @@
 //! Barra lateral de navegação sobre Mica: desenhada com buffered paint (alfa correto sobre o vidro).
+use crate::i18n::tr;
 use crate::theme::*;
 use crate::ui::*;
 use std::cell::Cell;
@@ -126,17 +127,17 @@ unsafe fn paint(h: HWND) {
             let mut ir = RECT { left: r.left + d(14), top: r.top, right: r.left + d(40), bottom: r.bottom };
             draw(ICONS[i], &mut ir, if i == cur { p.accent } else { col }, font(4), DT_LEFT | DT_VCENTER);
             let mut tr = RECT { left: r.left + d(46), top: r.top, right: r.right - d(6), bottom: r.bottom };
-            draw(name, &mut tr, col, font(0), DT_LEFT | DT_VCENTER);
+            draw(crate::i18n::tr(name), &mut tr, col, font(0), DT_LEFT | DT_VCENTER);
         }
         // estado da UPS no rodapé
         let st = with_app(|a| a.st.clone()).flatten();
         let (l1, l2, dot) = match &st {
             Some(s) => (
-                (if s.on_battery() { "Em bateria" } else { "Rede elétrica" }).to_string(),
+                (if s.on_battery() { tr("Em bateria") } else { tr("Rede elétrica") }).to_string(),
                 format!("{} %  ·  {} min", s.capacity, s.runtime_s / 60),
                 if s.on_battery() { rgb(252, 180, 0) } else { rgb(16, 190, 80) },
             ),
-            None => ("Sem comunicação".to_string(), "UPS não encontrada".to_string(), rgb(220, 60, 50)),
+            None => (tr("Sem comunicação").to_string(), tr("UPS não encontrada").to_string(), rgb(220, 60, 50)),
         };
         let y = ht - d(64);
         let mut dr = RECT { left: d(20), top: y, right: d(40), bottom: y + d(22) };

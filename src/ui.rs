@@ -83,7 +83,7 @@ pub fn fmt_ts(ts: i64) -> String {
     format!("{y:04}-{m:02}-{d:02} {:02}:{:02}:{:02}", s / 3600, s / 60 % 60, s % 60)
 }
 pub(crate) fn fmt_dur(secs: i64) -> String {
-    if secs <= 0 { return "Nenhum".into(); }
+    if secs <= 0 { return crate::i18n::tr("Nenhum").into(); }
     let (h, m, s) = (secs / 3600, secs / 60 % 60, secs % 60);
     if h > 0 { format!("{h} h {m:02} min {s:02} s") } else if m > 0 { format!("{m} min {s:02} s") } else { format!("{s} s") }
 }
@@ -127,7 +127,7 @@ pub(crate) fn panel(x: i32, y: i32, wd: i32, h: i32, div: &[i32]) {
 }
 pub(crate) fn button(p: HWND, text: &str, x: i32, y: i32, wd: i32, id: i32) -> HWND {
     let c = mk(p, w!("BUTTON"), text, x, y, wd, 30, id, 0x10000 | 0xB, 0, 0);
-    if matches!(text, "Aplicar" | "Iniciar auto-teste" | "Atualizar" | "Procurar") { crate::theme::primary_init(c); }
+    if ["Aplicar", "Iniciar auto-teste", "Atualizar", "Procurar"].iter().any(|k| crate::i18n::tr(k) == text) { crate::theme::primary_init(c); }
     c
 }
 pub(crate) fn check(p: HWND, text: &str, x: i32, y: i32, wd: i32, id: i32) -> HWND {

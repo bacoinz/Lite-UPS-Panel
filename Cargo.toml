@@ -1,6 +1,6 @@
 [package]
 name = "ups-panel"
-version = "1.1.0"
+version = "1.2.0"
 edition = "2021"
 
 [dependencies.windows]
@@ -25,6 +25,8 @@ features = [
   "Win32_Graphics_Dwm",
   "Win32_UI_Input_KeyboardAndMouse",
   "Win32_System_Registry",
+  "Win32_Globalization",
+  "Win32_Storage_Xps",
 ]
 
 [dependencies.rusqlite]

@@ -5,7 +5,7 @@
 **Monitor your USB UPS from a tiny native Windows app.**<br>
 Status, power events, energy report and a safe, cancellable shutdown, in ~23 MB of RAM.
 
-<a href="https://github.com/bacoinz/Lite-UPS-Panel/releases/latest"><img src="https://img.shields.io/github/v/release/bacoinz/Lite-UPS-Panel?style=flat-square&color=ff5a4f&labelColor=16161d&label=download" alt="Latest release"></a> <a href="LICENSE.md"><img src="https://img.shields.io/badge/license-PolyForm%20Noncommercial-ff5a4f?style=flat-square&labelColor=16161d" alt="License: PolyForm Noncommercial"></a> <img src="https://img.shields.io/badge/Windows-10%20%C2%B7%2011-ff5a4f?style=flat-square&logo=windows&logoColor=white&labelColor=16161d" alt="Windows 10 and 11"> <img src="https://img.shields.io/badge/Rust-native%20Win32-ff5a4f?style=flat-square&logo=rust&logoColor=white&labelColor=16161d" alt="Rust, native Win32"> <img src="https://img.shields.io/badge/installer-0.7%20MB-ff5a4f?style=flat-square&labelColor=16161d" alt="Installer: 0.7 MB"> <img src="https://img.shields.io/badge/interface-Portugu%C3%AAs%20(PT)-ff5a4f?style=flat-square&labelColor=16161d" alt="Interface: Portuguese"> <a href="https://ko-fi.com/bacoinz"><img src="https://img.shields.io/badge/Ko--fi-support%20Lite%20UPS%20Panel-ff5a4f?style=flat-square&logo=kofi&logoColor=white&labelColor=16161d" alt="Support Lite UPS Panel on Ko-fi"></a>
+<a href="https://github.com/bacoinz/Lite-UPS-Panel/releases/latest"><img src="https://img.shields.io/github/v/release/bacoinz/Lite-UPS-Panel?style=flat-square&color=ff5a4f&labelColor=16161d&label=download" alt="Latest release"></a> <a href="LICENSE.md"><img src="https://img.shields.io/badge/license-PolyForm%20Noncommercial-ff5a4f?style=flat-square&labelColor=16161d" alt="License: PolyForm Noncommercial"></a> <img src="https://img.shields.io/badge/Windows-10%20%C2%B7%2011-ff5a4f?style=flat-square&logo=windows&logoColor=white&labelColor=16161d" alt="Windows 10 and 11"> <img src="https://img.shields.io/badge/Rust-native%20Win32-ff5a4f?style=flat-square&logo=rust&logoColor=white&labelColor=16161d" alt="Rust, native Win32"> <img src="https://img.shields.io/badge/installer-0.7%20MB-ff5a4f?style=flat-square&labelColor=16161d" alt="Installer: 0.7 MB"> <img src="https://img.shields.io/badge/languages-EN%20%C2%B7%20PT%20%C2%B7%20ES%20%C2%B7%20IT%20%C2%B7%20FR-ff5a4f?style=flat-square&labelColor=16161d" alt="Languages: English, Portuguese, Spanish, Italian, French"> <a href="https://ko-fi.com/bacoinz"><img src="https://img.shields.io/badge/Ko--fi-support%20Lite%20UPS%20Panel-ff5a4f?style=flat-square&logo=kofi&logoColor=white&labelColor=16161d" alt="Support Lite UPS Panel on Ko-fi"></a>
 
 [Download](https://github.com/bacoinz/Lite-UPS-Panel/releases/latest) · [Why Lite](#why-lite-ups-panel) · [Compared with PowerPanel](#compared-with-powerpanel-personal) · [Build it](#build-it) · [Changelog](CHANGELOG.md) · [🇵🇹 Português](README.pt-PT.md)
 
@@ -13,7 +13,7 @@ Status, power events, energy report and a safe, cancellable shutdown, in ~23 MB 
 </div>
 
 > [!NOTE]
-> **The interface is in European Portuguese only.** The strings live in `src/ui_pages.rs`, `src/app.rs` and `src/nav.rs`, so translating them is a small, mechanical change.
+> **The interface speaks English, Português, Español, Italiano and Français.** It follows your Windows display language (anything else falls back to English) and you can change it any time in **Settings → Language**. To add a language, add a column to the table in [`src/i18n.rs`](src/i18n.rs); a test checks that every string has a translation.
 
 ## Why Lite UPS Panel
 
@@ -66,21 +66,22 @@ It started as a lean rewrite of the screens I actually used in CyberPower's Powe
 - **Responsive:** the UPS is polled on a background thread, so the window never freezes while HID is slow.
 - **Any USB UPS:** it scans the HID report descriptor for the standard Power Device and Battery System usages instead of matching a vendor ID. Brand and model come from the USB strings, with a vendor-name fallback.
 - **Starts with Windows**, in the tray. Launching it again opens the window.
+- **Five languages**, picked from your Windows language and switchable on the fly in Settings.
 
 ## Screenshots
 
 <table>
   <tr>
     <td width="50%"><img src="docs/screenshots/status.png" alt="Status: power source, capacity, runtime and details"></td>
-    <td width="50%"><img src="docs/screenshots/config.png" alt="Alarms and the runtime shutdown policy"></td>
+    <td width="50%"><img src="docs/screenshots/events.png" alt="Events: power problems summary and event log"></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/ups.png" alt="Transfer voltage limits and self-test"></td>
-    <td></td>
+    <td><img src="docs/screenshots/config.png" alt="Settings: alarms and the runtime shutdown policy"></td>
+    <td><img src="docs/screenshots/ups.png" alt="UPS: transfer voltage limits and self-test"></td>
   </tr>
 </table>
 
-<sub>On a CyberPower UT1500EG.</sub>
+<sub>On a CyberPower UT1500EG, with the English interface (the Energy page is not shown; every screen exists in all five languages).</sub>
 
 ## Compared with PowerPanel Personal
 
@@ -112,6 +113,7 @@ CyberPower's PowerPanel Personal is the app this one replaces on my PC. This is 
 ## Install
 
 1. Download the MSI from the [latest release](https://github.com/bacoinz/Lite-UPS-Panel/releases/latest) and run it. It needs administrator rights, because it installs to `Program Files` and adds the start-up entry.
+   The installer is not code-signed, so Windows SmartScreen may warn you; the SHA-256 is published next to it.
 2. It starts with Windows from then on. Open it from the Start menu or by launching it again.
 3. Uninstall it from *Settings → Apps*. Your events and settings stay in `C:\ProgramData\UPS Panel\ups.db`.
 
@@ -138,6 +140,7 @@ Command-line switches of `ups-panel.exe`:
 | `--status` | Prints the detected UPS, the values read and the report map, then exits |
 | `--dump` | Dumps every HID interface and its report descriptor (useful for bug reports) |
 | `--hidden` | Starts in the tray (this is what the start-up entry uses) |
+| `--shot <folder>` | Developer tool: saves a BMP of every page in every language, to review layouts |
 
 ## How it works
 
@@ -155,6 +158,7 @@ src/ups.rs        Descriptor scan -> report map, status, limits, alarm, self-tes
 src/monitor.rs    Event detection and shutdown decisions (unit tested)
 src/db.rs         SQLite: events, hourly energy, tests, settings
 src/theme.rs      Dark/Mica/Acrylic theme and owner-drawn controls
+src/i18n.rs       Translations (pt, en, es, it, fr) and language detection
 src/ui*.rs, nav.rs, app.rs   Window, pages, sidebar, tray
 wix/main.wxs      MSI definition
 ```

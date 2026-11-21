@@ -27,10 +27,10 @@ fn enable_privilege() -> bool {
 /// `dry_run` (variável UPSPANEL_DRYRUN) só regista, não desliga.
 pub fn dry_run() -> bool { std::env::var_os("UPSPANEL_DRYRUN").is_some() }
 
-pub fn start(reason: &str) -> bool {
+pub fn start(reason: &'static str) -> bool {
     if dry_run() { return true; }
     if !enable_privilege() { return false; }
-    let mut msg: Vec<u16> = format!("Lite UPS Panel: {reason}. O computador vai desligar.\0").encode_utf16().collect();
+    let mut msg: Vec<u16> = format!("{}\0", crate::i18n::fill(crate::i18n::tr("Lite UPS Panel: {}. O computador vai desligar."), &[crate::i18n::tr(reason).to_string()])).encode_utf16().collect();
     unsafe {
         InitiateSystemShutdownExW(
             None, PWSTR(msg.as_mut_ptr()), COUNTDOWN_S, true, false,

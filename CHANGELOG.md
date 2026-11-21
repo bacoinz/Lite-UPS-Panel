@@ -2,6 +2,19 @@
 
 All notable changes to Lite UPS Panel. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-11-21
+
+### Added
+- **Translations:** English, Español, Italiano and Français, next to the original Português. Every screen, message, notification, tray menu and shutdown text is translated.
+- The language follows the **Windows display language** on first run (any language other than these five falls back to English).
+- **Settings → Language:** change the language at any time, with an "Automatic" option; it applies immediately, no restart.
+- Decimal separator follows the language (dot in English, comma in the others).
+- `--shot <folder>` developer switch that saves an image of every page in every language, used to check that nothing is cut off.
+
+### Changed
+- The date and filter rows were widened so labels such as "Desde" and "From" fit, and the "Delete events" button grew for longer translations.
+- Tests now fail if a string passed to `tr()` has no translation, and if a translation changes the number of `{}` placeholders.
+
 ## [1.1.0] - 2026-11-21
 
 First public release. It is also the first version called **Lite UPS Panel** (it was "UPS Panel" in the internal 1.0.x builds).
@@ -35,4 +48,5 @@ Never released publicly. They covered the original scope:
 - Tray icon with balloon notifications, single instance, and start with Windows.
 - Per-machine MSI installer built with WiX.
 
+[1.2.0]: https://github.com/bacoinz/Lite-UPS-Panel/releases/tag/v1.2.0
 [1.1.0]: https://github.com/bacoinz/Lite-UPS-Panel/releases/tag/v1.1.0
